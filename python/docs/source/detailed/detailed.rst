@@ -26,6 +26,7 @@ This page acts to point you to more specific places in the documentation.  Table
    start_system
    tracking
    endgame
+   endgame.config
    parse
    containers
    logging

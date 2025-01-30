@@ -1,21 +1,24 @@
 🎮 bertini.endgame
 ==========================
 
-.. include:: common_doc_nav.incl
+.. autoclass:: bertini.endgame.AMPCauchyEG
+	:members:
 
-Notes
---------
+.. autoclass:: bertini.endgame.AMPPSEG
+	:members:
 
-Auto-generated docs
---------------------
+.. autoclass:: bertini.endgame.FixedDoubleCauchyEG
+	:members:
+
+.. autoclass:: bertini.endgame.FixedDoublePSEG
+	:members:
+
+.. autoclass:: bertini.endgame.FixedMultipleCauchyEG
+	:members:
+
+.. autoclass:: bertini.endgame.FixedMultiplePSEG
+	:members:
 
 
-.. automodule:: bertini.endgame
-
-
-🎮 bertini.endgame.config
-=====================================
-
-.. automodule:: bertini.endgame.config
 
 
