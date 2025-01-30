@@ -186,5 +186,10 @@ if(${SKBUILD})
     install(TARGETS _pybertini LIBRARY DESTINATION .)
 else()
     install(TARGETS _pybertini LIBRARY DESTINATION ${Python_SITELIB}/bertini)
+
+    add_custom_target(
+        link_target ALL
+        COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_FILE_NAME:_pybertini>" "${CMAKE_CURRENT_SOURCE_DIR}/../python/bertini/_pybertini.so"
+        )
 endif()
 
