@@ -1,29 +1,24 @@
 🎛 Configurations for algorithms, trackers, endgames, etc
 ===================================================================
 
-.. include:: common_doc_nav.incl
 
 🛤 Tracking configs
 ---------------------------
 
-* :class:`bertini.tracking.config.SteppingConfig`
-* :class:`bertini.tracking.config.NewtonConfig`
-* :class:`bertini.tracking.config.AMPConfig`
-* :class:`bertini.tracking.config.FixedPrecisionConfig`
-
-.. autoclass::bertini.tracking.config.SteppingConfig
-
-.. autoclass::bertini.tracking.config.NewtonConfig
-
-.. autoclass::bertini.tracking.config.AMPConfig
-
-.. autoclass::bertini.tracking.config.FixedPrecisionConfig
+* :class:`bertini.tracking.SteppingConfig`
+* :class:`bertini.tracking.NewtonConfig`
+* :class:`bertini.tracking.AMPConfig`
+* :class:`bertini.tracking.FixedPrecisionConfig`
 
 
 🎮 Endgame configs
 -------------------------
 
-.. autoclass::bertini.endgame.config.Endgame
+* :class:`bertini.endgame.SecurityConfig`
+* :class:`bertini.endgame.EndgameConfig`
+* :class:`bertini.endgame.CauchyConfig`
+* :class:`bertini.endgame.PowerSeriesConfig`
+
 
 Algorithm configs
 ---------------------------

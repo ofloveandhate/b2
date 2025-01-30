@@ -3,8 +3,10 @@
 
 .. include:: common_doc_nav.incl
 
-Notes
---------
+
+
+Notes on tracking in `bertini`.
+----------------------------------
 
 Trackers in Bertini2 are stateful objects, that refer to a system they are tracking, hold their specific settings, and have a notion of current time and space value.
 
@@ -23,8 +25,8 @@ Calls to :meth:`track_path` return a :class:`bertini.tracking.SuccessCode`.
 And, trackers are implemented using observer pattern.  They live in the ``bertini.tracking.observers`` namespace, with provisions for each tracker type available under a submodule thereof: ``amp``, ``multiple``, and ``double``.  They are also conveniently available using the ``tr.observers``, where ``tr`` is a tracker you already made.  See :mod:`bertini.tracking.observers.amp`
 
 
-Auto-generated docs
---------------------
+
+
 
 .. automodule:: bertini.tracking
 

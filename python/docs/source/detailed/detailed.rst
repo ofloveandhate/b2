@@ -26,7 +26,6 @@ This page acts to point you to more specific places in the documentation.  Table
    start_system
    tracking
    endgame
-   endgame.config
    parse
    containers
    logging
@@ -38,7 +37,6 @@ This page acts to point you to more specific places in the documentation.  Table
 .. toctree::
   :maxdepth: 1
 
-  cpp_side
   🕸 Bertini 2 Python documentation archives <https://doc.bertini2.org/pybertini_archives>
 
 

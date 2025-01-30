@@ -40,7 +40,7 @@ There are two basic flavors of endgame implemented:
 1. Power Series, commonly written PS or PSEG
 2. Cauchy
 
-Both estimate the cycle number and use it to compute a root at a time which is never tracked to.  PSEG uses Hermite interpolation and extrapolation, and Cauchy uses loops around the target time coupled with the `Cauchy integral formula <https://en.wikipedia.org/wiki/Cauchy%27s_integral_formula>`_.  Both continue until two successive approximations of the root match to a given tolerance (:py:attr:`bertini.endgame.config.Endgame.final_tolerance`).
+Both estimate the cycle number and use it to compute a root at a time which is never tracked to.  PSEG uses Hermite interpolation and extrapolation, and Cauchy uses loops around the target time coupled with the `Cauchy integral formula <https://en.wikipedia.org/wiki/Cauchy%27s_integral_formula>`_.  Both continue until two successive approximations of the root match to a given tolerance (:py:attr:`bertini.endgame.EndgameConfig.final_tolerance`).
 
 The implementations of the endgames go with a particular tracker, hence there are six provided endgame types.  Choose the one that goes with your selected tracker type.  Adaptive Multiple Precision is a good choice.
 
@@ -78,10 +78,13 @@ __all__ = ['AMPCauchyEG',
  'FixedDoublePSEG',
  'FixedMultipleCauchyEG',
  'FixedMultiplePSEG',
+ 'CauchyConfig',
+ 'EndgameConfig',
+ 'PowerSeriesConfig',
+ 'SecurityConfig',
  '__doc__',
  '__loader__',
  '__name__',
  '__package__',
  '__spec__',
- 'config',
  'observers']
