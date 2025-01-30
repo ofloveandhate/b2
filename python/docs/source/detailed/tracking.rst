@@ -1,12 +1,6 @@
 🛤 bertini.tracking
 ===========================
 
-.. include:: common_doc_nav.incl
-
-
-
-Notes on tracking in `bertini`.
-----------------------------------
 
 Trackers in Bertini2 are stateful objects, that refer to a system they are tracking, hold their specific settings, and have a notion of current time and space value.
 
@@ -29,12 +23,9 @@ And, trackers are implemented using observer pattern.  They live in the ``bertin
 
 
 .. automodule:: bertini.tracking
+	:members:
+	:undoc-members:
 
-
-🛤 bertini.tracking.config
-=====================================
-
-.. automodule:: bertini.tracking.config
 
 
 🛤 bertini.tracking.observers
@@ -50,7 +41,10 @@ And, trackers are implemented using observer pattern.  They live in the ``bertin
 
 📝 Symmetrically, there are the same observers in all three.
 
+
 .. automodule:: bertini.tracking.observers.amp
+	:members:
+	:undoc-members:
 
 
- Know that you are loved and appreciated, dear reader.  💟
+Know that you are loved and appreciated, dear reader.  💟
