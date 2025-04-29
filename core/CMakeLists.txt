@@ -40,19 +40,25 @@ find_package(MPC REQUIRED)
 include_directories(${GMP_INCLUDES})
 include_directories(${MPC_INCLUDES})
 
-find_package(Boost 1.82 REQUIRED
+set(Boost_DEBUG ON)
+
+# things to find NOT using config mode
+#find_package(Boost 1.82 REQUIRED NO_MODULE
+#                COMPONENTS 
+#                    test
+#)
+
+find_package(Boost 1.82 REQUIRED CONFIG
                 COMPONENTS 
                     serialization
-                    unit_test_framework
+                    wserialization
                     filesystem
-                    system
-                    chrono
-                    regex
-                    timer
                     log
-                    thread
                     log_setup
+                    thread
+                    unit_test_framework
 )
+
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 

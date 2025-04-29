@@ -5,3 +5,7 @@
         "**/*.sublime-project": true
     }
 }
+
+{
+    "CurrentProjectSetting": "x64 Debug"
+}

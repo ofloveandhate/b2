@@ -11,7 +11,7 @@ build-backend = "scikit_build_core.build"
 name = "bertini"
 version = "1.0.5"
 
-requires-python = ">= 3.13"
+requires-python = ">= 3.12"
 readme = "python/README.rst"
 
 dependencies = ["numpy","eigenpy"]

@@ -58,7 +58,7 @@ find_package(eigenpy 3.3 REQUIRED CONFIG)
 
 # Find python and Boost - both are required dependencies
 # so that we can `python_add_library`
-find_package(Python 3.13 REQUIRED COMPONENTS Interpreter Development.Module NumPy)
+find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module NumPy)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
@@ -68,23 +68,21 @@ if (PROJECT_IS_TOP_LEVEL)
     find_package(bertini2 REQUIRED)
 endif()
 
-find_package(Boost 1.82 REQUIRED
+find_package(Boost 1.82 REQUIRED CONFIG
                 COMPONENTS 
                     serialization
                     wserialization
-                    unit_test_framework
                     filesystem
-                    system
-                    chrono
-                    regex
-                    timer
                     log
-                    thread
                     log_setup
-                    python${Python_VERSION_MAJOR}${Python_VERSION_MINOR} # uses the versions found by find_package(Python3 ...) above.
+                    thread
 )
 
-
+# things to find NOT using config mode
+find_package(Boost 1.82 REQUIRED
+                COMPONENTS 
+                    python${Python_VERSION_MAJOR}${Python_VERSION_MINOR} # uses the versions found by find_package(Python3 ...) above.
+)
 
 
 

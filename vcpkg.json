@@ -1,0 +1,19 @@
+{
+    "dependencies": [
+        "gmp",
+        "mpfr",
+        "mpc",
+        "boost-log",
+        "boost-multiprecision",
+        "boost-serialization",
+        "boost-test",
+        "boost-filesystem",
+        "boost-python",
+        "eigen3",
+        {
+            "name": "vcpkg-get-python-packages",
+            "host": true
+        }
+    ]
+}
+

@@ -91,3 +91,6 @@ python/src/UNKNOWN.egg-info/top_level.txt
 _skbuild/
 */build/
 build/
+
+vcpkg_installed/
+*.pdb
