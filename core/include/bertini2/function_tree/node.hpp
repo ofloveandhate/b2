@@ -316,13 +316,19 @@ public:
 
 	
 	
-	
+	void AddParent(std::shared_ptr<Node> p){parents_.push_back(p);}
 
+	/**
+	Reset the tree towards the parents.  
+	*/
+	void ResetUpwards() const;
+	
 protected:
 	//Stores the current value of the node in all required types
 	//We must hard code in all types that we want here.
 	//TODO: Initialize this to some default value, second = false
 	mutable std::tuple< std::pair<dbl,bool>, std::pair<mpfr_complex,bool> > current_value_;
+	std::vector<std::weak_ptr<Node>> parents_;
 	
 	
 	

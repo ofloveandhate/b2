@@ -39,6 +39,7 @@ void UnaryOperator::Reset() const
 void UnaryOperator::SetOperand(std::shared_ptr<Node> n)
 {
 	operand_ = n;
+	n->AddParent(this->shared_from_this());
 }
 
 
@@ -140,13 +141,13 @@ void NaryOperator::Reset() const
 	Node::ResetStoredValues();
 	for (const auto& ii : operands_)
 		ii->Reset();
-
 }
 
 // Add an operand onto the container for this operator
 void NaryOperator::AddOperand(std::shared_ptr<Node> n)
 {
 	operands_.push_back(std::move(n));
+	n->AddParent(this->shared_from_this());
 }
 
 

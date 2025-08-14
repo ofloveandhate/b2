@@ -118,7 +118,7 @@ namespace node{
 		
 		SumOperator& operator+=(const std::shared_ptr<Node> & rhs)
 		{
-			this->AddOperand(rhs);
+			this->AddOperand(rhs,true);
 			return *this;
 		}
 		
@@ -137,8 +137,7 @@ namespace node{
 		*/
 		void AddOperand(std::shared_ptr<Node> child) override
 		{
-			NaryOperator::AddOperand(std::move(child));
-			signs_.push_back(true);
+			this->AddOperand(child, true);
 		}
 		
 		
@@ -148,6 +147,7 @@ namespace node{
 		void AddOperand(std::shared_ptr<Node> child, bool sign) // not an override
 		{
 			NaryOperator::AddOperand(std::move(child));
+			child->AddParent(this->shared_from_this());
 			signs_.push_back(sign);
 		}
 		

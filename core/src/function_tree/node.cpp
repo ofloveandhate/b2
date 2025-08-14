@@ -61,6 +61,16 @@ BOOST_CLASS_EXPORT_IMPLEMENT(bertini::node::ExpOperator)
 namespace bertini{
 namespace node{
 
+	void Node::ResetUpwards() const
+	{
+		this->ResetStoredValues();
+
+		for (auto wp: parents_){
+			std::shared_ptr<Node> sp = wp.lock();
+			sp->ResetUpwards();
+		}
+	}
+
 	unsigned Node::ReduceDepth()
 	{
 		return 0;
