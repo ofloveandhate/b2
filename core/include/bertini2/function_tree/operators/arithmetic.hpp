@@ -147,7 +147,8 @@ namespace node{
 		void AddOperand(std::shared_ptr<Node> child, bool sign) // not an override
 		{
 			NaryOperator::AddOperand(std::move(child));
-			child->AddParent(this->shared_from_this());
+			// you cannot add parentage to the children from here, because this function might be called during construction.
+			// do not do this: child->AddParent(this->shared_from_this());
 			signs_.push_back(sign);
 		}
 		

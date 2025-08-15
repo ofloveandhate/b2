@@ -316,13 +316,13 @@ public:
 
 	
 	
-	void AddParent(std::shared_ptr<Node> p){parents_.push_back(p);}
+	void AddParent(std::shared_ptr<Node> const& p);
 
 	/**
 	Reset the tree towards the parents.  
 	*/
 	void ResetUpwards() const;
-	
+
 protected:
 	//Stores the current value of the node in all required types
 	//We must hard code in all types that we want here.

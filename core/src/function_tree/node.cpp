@@ -71,6 +71,11 @@ namespace node{
 		}
 	}
 
+	void Node::AddParent(std::shared_ptr<Node> const& p)
+	{
+		parents_.push_back(p);
+	}
+
 	unsigned Node::ReduceDepth()
 	{
 		return 0;

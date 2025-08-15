@@ -39,7 +39,8 @@ void UnaryOperator::Reset() const
 void UnaryOperator::SetOperand(std::shared_ptr<Node> n)
 {
 	operand_ = n;
-	n->AddParent(this->shared_from_this());
+	// you cannot add parentage to the children from here, because this function might be called during construction.
+	// do not do this: child->AddParent(this->shared_from_this());
 }
 
 
@@ -146,8 +147,9 @@ void NaryOperator::Reset() const
 // Add an operand onto the container for this operator
 void NaryOperator::AddOperand(std::shared_ptr<Node> n)
 {
-	operands_.push_back(std::move(n));
-	n->AddParent(this->shared_from_this());
+	operands_.push_back(n);
+	// you cannot add parentage to the children from here, because this function might be called during construction.
+	// do not do this: child->AddParent(this->shared_from_this());
 }
 
 
