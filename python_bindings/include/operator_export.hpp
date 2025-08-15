@@ -106,7 +106,7 @@ namespace bertini{
 			
 			
 		private:
-			void (NodeBaseT::*AddOperand2)(std::shared_ptr<Node> child, bool) = &NodeBaseT::AddOperand;
+			void (NodeBaseT::*AddOperand2)(std::shared_ptr<Node>  const& child, bool) = &NodeBaseT::AddOperand;
 
 		};
 

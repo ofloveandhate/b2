@@ -95,7 +95,7 @@ namespace node{
 		void Reset() const override;
 		
 		
-		void SetOperand(std::shared_ptr<Node> n);
+		void SetOperand(std::shared_ptr<Node> const& n);
 		
 		
 		
@@ -175,7 +175,7 @@ namespace node{
 		void Reset() const override;
 		
 		// Add an operand onto the container for this operator
-		virtual void AddOperand(std::shared_ptr<Node> n);
+		virtual void AddOperand(std::shared_ptr<Node> const& n);
 		
 		
 		size_t NumOperands() const;

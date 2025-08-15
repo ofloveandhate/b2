@@ -176,9 +176,9 @@ namespace bertini{
 
 			// Multiplication operators
 			Nodeptr(*multNodeNode)(Nodeptr, const Nodeptr&) = &(operator*);
-			Nodeptr(*multNodeMpfr)(Nodeptr, mpfr_complex) = &(operator*);
-			Nodeptr(*multNodeRat)(Nodeptr, const mpq_rational&) = &(operator*);
-			Nodeptr(*multNodeInt)(Nodeptr, int) = &(operator*);
+			Nodeptr(*multNodeMpfr)(Nodeptr const&, mpfr_complex) = &(operator*);
+			Nodeptr(*multNodeRat)(Nodeptr const&, const mpq_rational&) = &(operator*);
+			Nodeptr(*multNodeInt)(Nodeptr const&, int) = &(operator*);
 			static Nodeptr imultNodeNode(Nodeptr  lhs, const Nodeptr & rhs)
 			{
 				return lhs *= rhs;
@@ -207,9 +207,9 @@ namespace bertini{
 
 			// Division operators
 			Nodeptr(*divNodeNode)(Nodeptr, const Nodeptr&) = &(operator/);
-			Nodeptr(*divNodeRat)(Nodeptr, const mpq_rational&) = &(operator/);
-			Nodeptr(*divNodeMpfr)(Nodeptr, mpfr_complex) = &(operator/);
-			Nodeptr(*divNodeInt)(Nodeptr, int) = &(operator/);
+			Nodeptr(*divNodeRat)(Nodeptr const&, const mpq_rational&) = &(operator/);
+			Nodeptr(*divNodeMpfr)(Nodeptr const&, mpfr_complex const&) = &(operator/);
+			Nodeptr(*divNodeInt)(Nodeptr const&, int) = &(operator/);
 			static Nodeptr idivNodeNode(Nodeptr  lhs, const Nodeptr & rhs)
 			{
 				return lhs /= rhs;

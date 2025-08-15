@@ -135,7 +135,7 @@ namespace node{
 		/**
 		\note: Special Behaviour: by default all terms added are positive
 		*/
-		void AddOperand(std::shared_ptr<Node> child) override
+		void AddOperand(std::shared_ptr<Node> const& child) override
 		{
 			this->AddOperand(child, true);
 		}
@@ -144,7 +144,7 @@ namespace node{
 		/**
 		\note Special Behaviour: Pass bool to set sign of term: true = add, false = subtract
 		*/
-		void AddOperand(std::shared_ptr<Node> child, bool sign) // not an override
+		void AddOperand(std::shared_ptr<Node> const& child, bool sign) // not an override
 		{
 			NaryOperator::AddOperand(std::move(child));
 			// you cannot add parentage to the children from here, because this function might be called during construction.
@@ -384,7 +384,7 @@ namespace node{
 		template<typename... Ts> 
 		static 
 		std::shared_ptr<MultOperator> Make(Ts&& ...ts){ 
-			return std::shared_ptr<MultOperator>( new MultOperator(ts...) );
+			return std::shared_ptr<MultOperator>(new MultOperator(ts...) );
 		}
 
 	private:
@@ -419,7 +419,7 @@ namespace node{
 		
 		
 		//Special Behaviour: by default all factors are in numerator
-		void AddOperand(std::shared_ptr<Node> child) override
+		void AddOperand(std::shared_ptr<Node> const& child) override
 		{
 			NaryOperator::AddOperand(std::move(child));
 			mult_or_div_.push_back(true);
@@ -428,7 +428,7 @@ namespace node{
 		
 		
 		//Special Behaviour: Pass bool to set sign of term: true = mult, false = divide
-		void AddOperand(std::shared_ptr<Node> child, bool mult) // not an override
+		void AddOperand(std::shared_ptr<Node> const& child, bool mult) // not an override
 		{
 			NaryOperator::AddOperand(std::move(child));
 			mult_or_div_.push_back(mult);
@@ -1248,52 +1248,52 @@ namespace node{
 	}
 	
 	
-	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> lhs, mpfr_float rhs)
+	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> const& lhs, mpfr_float rhs)
 	{
 		return MultOperator::Make(lhs,Float::Make(rhs));
 	}
 
-	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> lhs, mpfr_complex rhs)
+	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> const& lhs, mpfr_complex rhs)
 	{
 		return MultOperator::Make(lhs,Float::Make(rhs));
 	}
 	
-	inline std::shared_ptr<Node> operator*(mpfr_float lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator*(mpfr_float lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Float::Make(lhs), rhs);
 	}
 
-	inline std::shared_ptr<Node> operator*(mpfr_complex lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator*(mpfr_complex lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Float::Make(lhs), rhs);
 	}
 
-	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> lhs, int rhs)
+	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> const& lhs, int rhs)
 	{
 		return MultOperator::Make(lhs,Integer::Make(rhs));
 	}
 	
-	inline std::shared_ptr<Node> operator*(int lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator*(int lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Integer::Make(lhs), rhs);
 	}
 	
-	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> lhs, mpz_int const& rhs)
+	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> const& lhs, mpz_int const& rhs)
 	{
 		return MultOperator::Make(lhs,Integer::Make(rhs));
 	}
 	
-	inline std::shared_ptr<Node> operator*(mpz_int const& lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator*(mpz_int const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Integer::Make(lhs), rhs);
 	}
 	
-	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> lhs, mpq_rational const& rhs)
+	inline std::shared_ptr<Node> operator*(std::shared_ptr<Node> const& lhs, mpq_rational const& rhs)
 	{
 		return MultOperator::Make(lhs,Rational::Make(rhs,0));
 	}
 	
-	inline std::shared_ptr<Node> operator*(mpq_rational const& lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator*(mpq_rational const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Rational::Make(lhs,0), rhs);
 	}
@@ -1378,52 +1378,52 @@ namespace node{
 		return lhs/=rhs;
 	}
 	
-	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> lhs, mpfr_float rhs)
+	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> const& lhs, mpfr_float const& rhs)
 	{
 		return MultOperator::Make(lhs, true, Float::Make(rhs), false);
 	}
 
-	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> lhs, mpfr_complex rhs)
+	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> const& lhs, mpfr_complex const& rhs)
 	{
 		return MultOperator::Make(lhs, true, Float::Make(rhs), false);
 	}
 	
-	inline std::shared_ptr<Node> operator/(mpfr_float lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator/(mpfr_float const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Float::Make(lhs), true, rhs, false);
 	}
 
-	inline std::shared_ptr<Node> operator/(mpfr_complex lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator/(mpfr_complex const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Float::Make(lhs), true, rhs, false);
 	}
 
-	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> lhs, int rhs)
+	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> const& lhs, int rhs)
 	{
 		return MultOperator::Make(lhs, true, Integer::Make(rhs), false);
 	}
 	
-	inline std::shared_ptr<Node> operator/(int lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator/(int lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Integer::Make(lhs), true, rhs, false);
 	}
 
-	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> lhs, mpz_int const& rhs)
+	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> const& lhs, mpz_int const& rhs)
 	{
 		return MultOperator::Make(lhs, true, Integer::Make(rhs), false);
 	}
 	
-	inline std::shared_ptr<Node> operator/(mpz_int const& lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator/(mpz_int const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Integer::Make(lhs), true, rhs, false);
 	}
 
-	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> lhs, mpq_rational const& rhs)
+	inline std::shared_ptr<Node> operator/(std::shared_ptr<Node> const& lhs, mpq_rational const& rhs)
 	{
 		return MultOperator::Make(lhs, true, Rational::Make(rhs,0), false);
 	}
 	
-	inline std::shared_ptr<Node> operator/(mpq_rational const& lhs,  std::shared_ptr<Node> rhs)
+	inline std::shared_ptr<Node> operator/(mpq_rational const& lhs,  std::shared_ptr<Node> const& rhs)
 	{
 		return MultOperator::Make(Rational::Make(lhs,0), true, rhs, false);
 	}
