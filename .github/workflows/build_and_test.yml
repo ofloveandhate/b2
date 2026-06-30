@@ -37,6 +37,11 @@ on:
         required: false
         type: string
         default: ''
+      probe_alloc:
+        description: 'Allocator probe: build+test ONLY macos-14 / py3.14 and A/B the BERTINI2_NO_FAST_ALLOC hook (investigation, not a full matrix).'
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       full_matrix:
@@ -46,6 +51,11 @@ on:
         default: false
       minimal:
         description: 'Build only the ubuntu-latest / python-3.11 wheel; skip C++ tests, Windows, macOS, and wheel tests.'
+        required: false
+        type: boolean
+        default: false
+      probe_alloc:
+        description: 'Allocator probe: build+test ONLY macos-14 / py3.14 and A/B the BERTINI2_NO_FAST_ALLOC hook (investigation, not a full matrix).'
         required: false
         type: boolean
         default: false
@@ -87,7 +97,11 @@ jobs:
           # Mac available to the maintainer). Intel macOS support is paused
           # pending a reproducer or an upstream fix. Re-add "macos-15-intel"
           # below when ready to revisit.
-          if [[ "${{ inputs.minimal }}" == "true" ]]; then
+          if [[ "${{ inputs.probe_alloc }}" == "true" ]]; then
+            # allocator probe: the SIGSEGV is macos-14 / py3.14 only, so build+test just that one
+            echo 'os=["macos-14"]' >> $GITHUB_OUTPUT
+            echo 'python_versions=["3.14"]' >> $GITHUB_OUTPUT
+          elif [[ "${{ inputs.minimal }}" == "true" ]]; then
             echo 'os=["ubuntu-latest"]' >> $GITHUB_OUTPUT
             echo 'python_versions=["3.11"]' >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == "refs/heads/develop" || "${{ github.ref }}" == refs/tags/* || "${{ inputs.full_matrix }}" == "true" || "${{ github.event.pull_request.base.ref }}" == "develop" || "${{ github.event.pull_request.base.ref }}" == "main" ]]; then
@@ -571,6 +585,78 @@ jobs:
         run: |
           pip install numpy
           pip install --no-index --find-links dist/ bertini2
+
+      # Investigation (#57): characterize the runtime where the intermittent SIGSEGV in
+      # sympy_bridge_test.py lives (macOS / py3.14).  We have NOT reproduced it on Homebrew or
+      # python-build-standalone py3.14 with this exact wheel, so the suspect is the python.org
+      # framework build + this runner's heap.  Dump the exact environment so we can match it.
+      - name: Environment report (py3.14 SIGSEGV investigation)
+        if: ${{ contains(matrix.python-version, '3.14') }}
+        run: |
+          set +e
+          echo "## Environment report (${{ matrix.os }} / py${{ matrix.python-version }})" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo '```'
+            echo "runner.os=${{ runner.os }}  runner.arch=${{ runner.arch }}"
+            sw_vers || true
+            uname -a
+            echo "--- python ---"
+            which python; python -VV
+            python -c "import sys, sysconfig; print('prefix', sys.prefix); print('framework', sysconfig.get_config_var('PYTHONFRAMEWORK')); print('config_args', sysconfig.get_config_var('CONFIG_ARGS')); print('gil_disabled', sysconfig.get_config_var('Py_GIL_DISABLED'))"
+            echo "--- key package versions ---"
+            python -c "import numpy, sympy, mpmath; print('numpy', numpy.__version__, '| sympy', sympy.__version__, '| mpmath', mpmath.__version__)"
+            python -c "import sympy.external.gmpy as g; print('sympy GROUND_TYPES:', g.GROUND_TYPES)"   # 'python' = no gmpy2 (expected)
+            python -c "import importlib.util as u; print('gmpy2 importable:', u.find_spec('gmpy2') is not None)"
+            pip freeze | grep -iE '^(bertini2|numpy|sympy|mpmath|pandas|pytest|gmpy2)==' || true
+            echo "--- bertini build/runtime ---"
+            python -c "import bertini, os; print('bertini', bertini.__file__); print('BERTINI2_NO_FAST_ALLOC=', os.environ.get('BERTINI2_NO_FAST_ALLOC'))"
+            echo "--- bertini._pybertini shared lib + vendored deps (delocated) ---"
+            python -c "import bertini._pybertini as m; print(m.__file__)"
+            SO=$(python -c "import bertini._pybertini as m; print(m.__file__)")
+            otool -L "$SO" || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY" 2>&1
+          cat "$GITHUB_STEP_SUMMARY"
+
+      # A/B the mimalloc GMP-limb hook: the SIGSEGV is allocator-sensitive, so run the sympy bridge
+      # tests in a loop with the hook ON (default) and OFF (BERTINI2_NO_FAST_ALLOC=1), under random
+      # ordering + faulthandler.  Diagnostic only -- never fails the job (the verdict is the output).
+      - name: Allocator A/B probe (py3.14 SIGSEGV)
+        if: ${{ contains(matrix.python-version, '3.14') }}
+        continue-on-error: true
+        env:
+          PROBE_ITERS: '40'
+        run: |
+          pip install pytest pytest-timeout pytest-randomly sympy pandas
+          TEST=python/test/classes/sympy_bridge_test.py
+          echo "## Allocator A/B probe (sympy round-trip eval, $PROBE_ITERS iters each)" >> "$GITHUB_STEP_SUMMARY"
+          probe () {                       # $1=label; remaining args = env prefix for the run
+            local label="$1"; shift
+            local i ec
+            for i in $(seq 1 "$PROBE_ITERS"); do
+              "$@" python -X faulthandler -m pytest "$TEST" -p randomly -q >/tmp/probe.out 2>&1
+              ec=$?
+              if [ "$ec" -ge 130 ]; then
+                echo "::warning::$label CRASHED exit=$ec on iter $i/$PROBE_ITERS"
+                tail -50 /tmp/probe.out
+                printf -- '- **%s**: CRASHED (exit %s, likely SIGSEGV) on iter %s/%s\n' "$label" "$ec" "$i" "$PROBE_ITERS" >> "$GITHUB_STEP_SUMMARY"
+                return 1
+              fi
+            done
+            printf -- '- **%s**: %s/%s clean\n' "$label" "$PROBE_ITERS" "$PROBE_ITERS" >> "$GITHUB_STEP_SUMMARY"
+            return 0
+          }
+          set +e
+          probe 'hook ON  (default mimalloc GMP allocator)';                          on=$?
+          probe 'hook OFF (BERTINI2_NO_FAST_ALLOC=1)' env BERTINI2_NO_FAST_ALLOC=1;    off=$?
+          {
+            echo
+            if   [ "$on" -ne 0 ] && [ "$off" -eq 0 ]; then echo '**Verdict:** mimalloc GMP hook is the trigger (crashes ON, clean OFF) → gate the hook off on this platform / fix the hook.'
+            elif [ "$on" -ne 0 ] && [ "$off" -ne 0 ]; then echo '**Verdict:** allocator exonerated (crashes both ways) → next is an ASAN wheel-test build.'
+            elif [ "$on" -eq 0 ] && [ "$off" -ne 0 ]; then echo '**Verdict:** UNEXPECTED — clean with hook ON but crashes with it OFF; re-run.'
+            else echo "**Verdict:** did not reproduce in $PROBE_ITERS iters (intermittent); bump PROBE_ITERS and re-run."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Python tests
         run: |
