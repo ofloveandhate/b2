@@ -167,6 +167,29 @@ def test_round_trip_bertini_to_sympy_to_bertini():
     assert mp.abs(eval_at(rebuilt, **pt) - eval_at(tree, **pt)) <= mp.Float('1e-25')
 
 
+def test_round_trip_then_eval_repeatedly_is_stable():
+    # Regression guard for a SIGSEGV seen on CI (macOS / py3.14) in
+    # test_round_trip_bertini_to_sympy_to_bertini, at eval_at -> node.eval through the SLP.
+    # The crash is intermittent and allocator-sensitive (the GMP/mpfr limb hook), so a single
+    # round-trip+eval does not reliably surface it.  Hammer the exact bertini->sympy->bertini->eval
+    # path many times over a battery of expressions -- including transcendentals and high powers
+    # that churn mpfr/mpc temporaries -- and require every reconstruction to evaluate identically
+    # to the original.  A correctness divergence OR a crash here both fail the guard.
+    x, y = pb.Variable('x'), pb.Variable('y')
+    trees = [
+        x**2 * y - Rational('2/5') + sin(x),
+        x**3 - y**2 + Rational('7/3'),
+        sin(x) * x - y + Rational('1/9'),
+        x**4 * y**2 - Rational('5/11') + sin(y),
+        sin(x) + sin(y) - x * y,
+    ]
+    pt = dict(x=complex(0.6, -0.2), y=complex(-1.1, 0.4))
+    for _ in range(200):
+        for tree in trees:
+            rebuilt = from_sympy(to_sympy(tree), [x, y])
+            assert mp.abs(eval_at(rebuilt, **pt) - eval_at(tree, **pt)) <= mp.Float('1e-25')
+
+
 # --- the acceptance test: define in sympy, solve with bertini ---
 
 def test_end_to_end_solve_matches_sympy(sxy):
