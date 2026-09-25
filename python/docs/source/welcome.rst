@@ -36,7 +36,7 @@ Note that the import in Python does NOT use the 2, as silviana didn't want to ha
 
     import bertini
 
-and then do wahtever with the library.
+and then do whatever with the library.
 
 .. note::
 
