@@ -132,8 +132,6 @@ block, concatenate, solve** -- scales to as many blocks as your problem comes in
 Complete example
 ================
 
-The whole tutorial as one runnable script -- assemble nothing, just run it:
-
 .. literalinclude:: concatenate_systems.py
    :language: python
    :caption: concatenate_systems.py

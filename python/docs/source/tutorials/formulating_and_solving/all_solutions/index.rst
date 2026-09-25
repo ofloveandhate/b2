@@ -129,7 +129,6 @@ degree -- the total-degree count above is wasteful.  The
 Complete example
 ================
 
-The whole tutorial as one runnable script -- assemble nothing, just run it:
 
 .. literalinclude:: all_solutions.py
    :language: python
