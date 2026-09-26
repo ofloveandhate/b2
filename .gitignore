@@ -103,6 +103,8 @@ _doctest_build/
 # Wheel / sdist output
 dist/
 
+bertini_output/
+
 # Local Claude Code config and personal working notes
 .claude/
 z_notes/
