@@ -89,7 +89,7 @@ coefficient row), and ``bertini`` expresses the linear algebra:
     sys = bertini.System()
     sys.add(bertini.VariableGroup([x, y, z, *v]), f, g)   # curve equations
     sys.add_functions(M @ v)                              # M v = 0   (rank deficiency, using @ for matrix multiplication)
-    sys.add_function(v_patch_coeffs @ v)[0] - 1)   # de-zero patch h.v = 1
+    sys.add_function((v_patch_coeffs @ v)[0] - 1)   # de-zero patch h.v = 1
 
     solver = bertini.ZeroDimSolver(sys, endgame='cauchy', mptype='adaptive', startsystem='binomial')
     solver.solve()
