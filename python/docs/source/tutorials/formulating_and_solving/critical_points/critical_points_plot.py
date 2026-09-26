@@ -90,7 +90,7 @@ def plot(finite):
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z')
     ax.set_xlim(-2, 2); ax.set_ylim(-2.5, 2.5); ax.set_zlim(-1.6, 1.6)
     ax.legend(loc='upper left', fontsize=7.5)
-    ax.set_title('All critical points: smooth (●) and singular crossings (✕)')
+    ax.set_title('Critical points')
     return fig
 
 
